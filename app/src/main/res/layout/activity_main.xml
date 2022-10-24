@@ -9,7 +9,6 @@
     <cu.uci.micalendario.CustomCalendarView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/custom_calendar_layout"
-        ></cu.uci.micalendario.CustomCalendarView>
+        android:id="@+id/custom_calendar_layout"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

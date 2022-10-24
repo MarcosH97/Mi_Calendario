@@ -19,6 +19,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.w3c.dom.Text;
 
@@ -128,8 +129,53 @@ public class CustomCalendarView extends LinearLayout {
                 alertdialog.show();
             }
         });
+
+        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                String date = eventDateFormate.format(dates.get(position));
+
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setCancelable(true);
+                View showView = LayoutInflater.from(parent.getContext()).inflate(R.layout.show_events_layout, null);
+
+                RecyclerView recyclerView = showView.findViewById(R.id.eventRV);
+                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(showView.getContext());
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setHasFixedSize(true);
+                EventsRecyclerAdapter eventsRecyclerAdapter = new EventsRecyclerAdapter(showView.getContext(), CollectEventsByDate(date));
+                recyclerView.setAdapter(eventsRecyclerAdapter);
+                eventsRecyclerAdapter.notifyDataSetChanged();
+
+                builder.setView(showView);
+                alertdialog = builder.create();
+                alertdialog.show();
+
+                return true;
+            }
+        });
     }
 
+    private ArrayList<Events> CollectEventsByDate(String date){
+        ArrayList<Events> array = new ArrayList<>();
+        dbOpenHelper = new DBOpenHelper(context);
+        SQLiteDatabase database = dbOpenHelper.getReadableDatabase();
+        Cursor cursor = dbOpenHelper.ReadEvents(date, database);
+        while (cursor.moveToNext()){
+            String event = cursor.getString(cursor.getColumnIndex(DBStructure.EVENT));
+            String time = cursor.getString(cursor.getColumnIndex(DBStructure.TIME));
+            String date = cursor.getString(cursor.getColumnIndex(DBStructure.DATE));
+            String monthz = cursor.getString(cursor.getColumnIndex(DBStructure.MONTH));
+            String yearz = cursor.getString(cursor.getColumnIndex(DBStructure.YEAR));
+            Events event = new Events(event, time, date, monthz, yearz);
+            array.add(event);
+        }
+        cursor.close();
+        dbOpenHelper.close();
+
+        return array;
+    }
 
     public CustomCalendarView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -190,5 +236,6 @@ public class CustomCalendarView extends LinearLayout {
         }
         cursor.close();
         dbOpenHelper.close();
+        //djdjsjcjdjamdjajj
     }
 }

@@ -45,17 +45,25 @@ public class GridAdapter extends ArrayAdapter {
         int Day = calendar.get(Calendar.DAY_OF_MONTH);
         int displayonth = calendar.get(Calendar.MONTH)+1;
         int displayYear = calendar.get(Calendar.YEAR);
-        int currentMonth = calendar.get(Calendar.MONTH)+1;
+        int currentMonth = currentDate.get(Calendar.MONTH)+1;
         int currentYear = currentDate.get(Calendar.YEAR);
 
         View view = convertView;
         if(view == null){
             view = inflater.inflate(R.layout.single_cell_layout, parent, false);
         }
+        System.out.println("display month: "+ Day + "    current month: "+currentDate.get(Calendar.DAY_OF_MONTH));
 
         if(displayonth == currentMonth && displayYear == currentYear){
-            view.setBackgroundColor(getContext().getResources().getColor(R.color.purple_200));
+//            System.out.println("entered bool");
+            if (Day == currentDate.get(Calendar.DAY_OF_MONTH)){
+//                        System.out.println("entered bool");
+                view.setBackgroundColor(Color.parseColor("#ff0000"));
+            }else {
+                view.setBackgroundColor(getContext().getResources().getColor(R.color.purple_200));
+            }
         }else{
+//            System.out.println("entered negative bool");
             view.setBackgroundColor(Color.parseColor("#cccccc"));
         }
         TextView DayNumber = view.findViewById(R.id.calendar_day);
@@ -63,13 +71,13 @@ public class GridAdapter extends ArrayAdapter {
         DayNumber.setText(String.valueOf(Day));
         Calendar eventCal = Calendar.getInstance();
         ArrayList<String> arrayList = new ArrayList<>();
-//        for (int i = 0; i < events.size(); i++) {
-//            eventCal.setTime(ConvertStringToDate(events.get(i).getDATE()));
-//            if(Day == eventCal.get(Calendar.DAY_OF_MONTH) && displayonth == eventCal.get(Calendar.MONTH)+1 && displayYear == eventCal.get(Calendar.YEAR)){
-//                arrayList.add(events.get(i).getEVENT());
-//                EventNumber.setText(arrayList.size() + " Eventos");
-//            }
-//        }
+        for (int i = 0; i < events.size(); i++) {
+            eventCal.setTime(ConvertStringToDate(events.get(i).getDATE()));
+            if(Day == eventCal.get(Calendar.DAY_OF_MONTH) && displayonth == eventCal.get(Calendar.MONTH)+1 && displayYear == eventCal.get(Calendar.YEAR)){
+                arrayList.add(events.get(i).getEVENT());
+                EventNumber.setText(arrayList.size() + " Eventos");
+            }
+        }
         return view;
     }
 
